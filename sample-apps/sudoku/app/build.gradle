@@ -1,0 +1,53 @@
+plugins {
+    id 'com.android.application'
+}
+
+def releaseKeystore = file('../../sample-release.jks')
+
+android {
+    namespace 'com.example.sudoku'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.example.sudoku'
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName '1.0'
+    }
+
+    signingConfigs {
+        release {
+            // Shared sample keystore, kept next to the projects but not in the repo.
+            storeFile releaseKeystore
+            storePassword 'sample123'
+            keyAlias 'sample'
+            keyPassword 'sample123'
+        }
+    }
+
+    buildTypes {
+        release {
+            // Without the shared keystore, fall back to the debug key so the build still works.
+            if (releaseKeystore.exists()) {
+                signingConfig signingConfigs.release
+            } else {
+                if (gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }) {
+                    logger.warn("warning: ${releaseKeystore} not found; signing the release APK with the debug key")
+                }
+                signingConfig signingConfigs.debug
+            }
+            // The SDK builds its contract by reflection, so nothing may be renamed away.
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation files('libs/nowrun-sdk-1.0.3.aar')
+}

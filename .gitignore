@@ -1,0 +1,19 @@
+# Gradle and Android build output
+.gradle/
+build/
+local.properties
+*.apk
+*.aab
+
+# The nowrun SDK and module releases, downloaded by each sample's build.sh
+sample-apps/sudoku/app/libs/
+sample-apps/nowrun-drape/vendor/
+
+# Signing keys
+*.jks
+*.keystore
+
+# IDE and OS files
+.idea/
+*.iml
+.DS_Store
